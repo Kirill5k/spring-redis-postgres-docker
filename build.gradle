@@ -1,47 +1,36 @@
-buildscript {
-    ext {
-        springBootVersion = '1.2.7.RELEASE'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
-        classpath('io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE')
-    }
+plugins {
+    id 'org.springframework.boot' version '2.1.9.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'spring-boot' 
-apply plugin: 'io.spring.dependency-management' 
+group = 'spring-redis-postgres-docker'
+version = '0.0.1'
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
-jar {
-    baseName = 'homework'
-    version = '0.0.1-SNAPSHOT'
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
-
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter')
-    testCompile('org.springframework.boot:spring-boot-starter-test') 
-}
-
-
-eclipse {
-    classpath {
-         containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
-         containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+    implementation('org.springframework.boot:spring-boot-starter-data-redis') {
+        exclude group: 'io.lettuce', module: 'lettuce-core'
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.7'
+    implementation 'redis.clients:jedis:2.9.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 }

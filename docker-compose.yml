@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - postgresql
+      - redis
+    environment:
+      DB_HOST: postgresql
+      DB_NAME: four_finance
+      DB_USER: admin
+      DB_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - 8080:8080
+
+  redis:
+    image: redis:latest
+
+  postgresql:
+    image: postgres:10.0
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - "./sql:/docker-entrypoint-initdb.d"
